@@ -200,6 +200,7 @@ public abstract class BeanFactoryUtils {
 	}
 
 	/**
+	 * 获取所有相同类型的Bean名称，包括父类
 	 * Get all bean names for the given type, including those defined in ancestor
 	 * factories. Will return unique names in case of overridden bean definitions.
 	 * <p>Does consider objects created by FactoryBeans if the "allowEagerInit"

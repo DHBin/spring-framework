@@ -685,6 +685,7 @@ class ConstructorResolver {
 	}
 
 	/**
+	 * 创建构造器或工厂方法需要的参数
 	 * Create an array of arguments to invoke a constructor or factory method,
 	 * given the resolved constructor argument values.
 	 */
@@ -846,6 +847,10 @@ class ConstructorResolver {
 			@Nullable Set<String> autowiredBeanNames, TypeConverter typeConverter, boolean fallback) {
 
 		Class<?> paramType = param.getParameterType();
+		/*
+		* 判断paramType是不是与InjectionPoint的类型相同，或是不是InjectionPoint的
+		* 子类或者子接口
+		* */
 		if (InjectionPoint.class.isAssignableFrom(paramType)) {
 			InjectionPoint injectionPoint = currentInjectionPoint.get();
 			if (injectionPoint == null) {

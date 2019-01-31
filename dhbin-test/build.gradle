@@ -15,4 +15,8 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile(project(':spring-context'))
     compile(project(":spring-instrument"))
+    // https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api
+    compile group: 'javax.annotation', name: 'javax.annotation-api', version: '1.2-b02'
+    // https://mvnrepository.com/artifact/org.aspectj/aspectjweaver
+    compile group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.2'
 }

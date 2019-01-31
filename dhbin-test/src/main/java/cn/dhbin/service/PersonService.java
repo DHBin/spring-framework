@@ -1,4 +1,4 @@
-package cn.dhbin.serivce;
+package cn.dhbin.service;
 
 import cn.dhbin.domain.Person;
 

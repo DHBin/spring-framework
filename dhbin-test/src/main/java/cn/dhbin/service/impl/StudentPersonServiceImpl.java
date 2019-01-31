@@ -1,7 +1,8 @@
-package cn.dhbin.serivce.impl;
+package cn.dhbin.service.impl;
 
 import cn.dhbin.domain.Person;
-import cn.dhbin.serivce.PersonService;
+import cn.dhbin.service.PersonService;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -10,13 +11,13 @@ import javax.annotation.PostConstruct;
  * @author DHB
  */
 @Service
-public class TeacherPersonServiceImpl implements PersonService {
-
+@Primary
+public class StudentPersonServiceImpl implements PersonService {
 
 	@Override
 	public Person getPerson() {
 		Person person = new Person();
-		person.setName("教师");
+		person.setName("学生");
 		return person;
 	}
 
@@ -25,5 +26,4 @@ public class TeacherPersonServiceImpl implements PersonService {
 	public void init() {
 		System.out.println(this.getClass().getName() + " running");
 	}
-
 }

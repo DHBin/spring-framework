@@ -52,6 +52,12 @@ public class ContextAnnotationAutowireCandidateResolver extends QualifierAnnotat
 		return (isLazy(descriptor) ? buildLazyResolutionProxy(descriptor, beanName) : null);
 	}
 
+	/**
+	 * 判断是否是懒加载
+	 *
+	 * @param descriptor 依赖描述
+	 * @return 是否是懒加载
+	 */
 	protected boolean isLazy(DependencyDescriptor descriptor) {
 		for (Annotation ann : descriptor.getAnnotations()) {
 			Lazy lazy = AnnotationUtils.getAnnotation(ann, Lazy.class);
