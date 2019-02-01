@@ -18,6 +18,7 @@ public class StudentPersonServiceImpl implements PersonService {
 	public Person getPerson() {
 		Person person = new Person();
 		person.setName("学生");
+		System.out.println("student => getPerson()");
 		return person;
 	}
 
