@@ -1,4 +1,4 @@
-package cn.dhbin.proxy.dao;
+package cn.dhbin.proxy.dao.impl;
 
 /**
  * @author DHB

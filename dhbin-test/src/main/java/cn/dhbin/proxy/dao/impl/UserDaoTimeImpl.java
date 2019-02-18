@@ -1,4 +1,6 @@
-package cn.dhbin.proxy.dao;
+package cn.dhbin.proxy.dao.impl;
+
+import cn.dhbin.proxy.dao.UserDao;
 
 /**
  * @author DHB
