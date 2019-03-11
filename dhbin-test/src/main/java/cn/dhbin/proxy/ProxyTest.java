@@ -6,6 +6,8 @@ import cn.dhbin.proxy.dao.impl.UserDaoLogImpl;
 import cn.dhbin.proxy.dao.impl.UserDaoTimeImpl;
 import cn.dhbin.proxy.util.ProxyUtil;
 
+import java.lang.reflect.Proxy;
+
 /**
  * @author DHB
  */
@@ -30,5 +32,15 @@ public class ProxyTest {
 			newInstance.getName();
 			newInstance.insert("user");
 		}
+
+		System.out.println("============================");
+		UserDaoImpl testJdkProxyUserDao = new UserDaoImpl();
+		Object newProxyInstance = Proxy.newProxyInstance(testJdkProxyUserDao.getClass().getClassLoader(), new Class[]{UserDao.class}, (proxy, method, args1) -> {
+			System.out.println("JDK动态代理==执行前");
+			Object o = method.invoke(testJdkProxyUserDao, args1);
+			System.out.println("JDK动态代理==执行后");
+			return o;
+		});
+		((UserDao) newProxyInstance).delete();
 	}
 }
