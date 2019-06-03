@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -132,6 +132,25 @@ public class ScriptUtilsUnitTests {
 		assertEquals("statement 4 not split correctly", statement4, statements.get(3));
 	}
 
+	@Test
+	public void readAndSplitScriptContainingCommentsWithWindowsLineEnding() throws Exception {
+		String script = readScript("test-data-with-comments.sql").replaceAll("\n", "\r\n");
+		List<String> statements = new ArrayList<>();
+		splitSqlScript(script, ';', statements);
+
+		String statement1 = "insert into customer (id, name) values (1, 'Rod; Johnson'), (2, 'Adrian Collier')";
+		String statement2 = "insert into orders(id, order_date, customer_id) values (1, '2008-01-02', 2)";
+		String statement3 = "insert into orders(id, order_date, customer_id) values (1, '2008-01-02', 2)";
+		// Statement 4 addresses the error described in SPR-9982.
+		String statement4 = "INSERT INTO persons( person_id , name) VALUES( 1 , 'Name' )";
+
+		assertEquals("wrong number of statements", 4, statements.size());
+		assertEquals("statement 1 not split correctly", statement1, statements.get(0));
+		assertEquals("statement 2 not split correctly", statement2, statements.get(1));
+		assertEquals("statement 3 not split correctly", statement3, statements.get(2));
+		assertEquals("statement 4 not split correctly", statement4, statements.get(3));
+	}
+
 	@Test  // SPR-10330
 	public void readAndSplitScriptContainingCommentsWithLeadingTabs() throws Exception {
 		String script = readScript("test-data-with-comments-and-leading-tabs.sql");
@@ -151,6 +170,20 @@ public class ScriptUtilsUnitTests {
 	@Test  // SPR-9531
 	public void readAndSplitScriptContainingMultiLineComments() throws Exception {
 		String script = readScript("test-data-with-multi-line-comments.sql");
+		List<String> statements = new ArrayList<>();
+		splitSqlScript(script, ';', statements);
+
+		String statement1 = "INSERT INTO users(first_name, last_name) VALUES('Juergen', 'Hoeller')";
+		String statement2 = "INSERT INTO users(first_name, last_name) VALUES( 'Sam' , 'Brannen' )";
+
+		assertEquals("wrong number of statements", 2, statements.size());
+		assertEquals("statement 1 not split correctly", statement1, statements.get(0));
+		assertEquals("statement 2 not split correctly", statement2, statements.get(1));
+	}
+
+	@Test
+	public void readAndSplitScriptContainingMultiLineNestedComments() throws Exception {
+		String script = readScript("test-data-with-multi-line-nested-comments.sql");
 		List<String> statements = new ArrayList<>();
 		splitSqlScript(script, ';', statements);
 
