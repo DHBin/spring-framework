@@ -1,11 +1,11 @@
 /*
- * Copyright 2002-2018 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -145,7 +145,7 @@ public final class CollectionFactory {
 	 * Create the most appropriate collection for the given collection type.
 	 * <p>Delegates to {@link #createCollection(Class, Class, int)} with a
 	 * {@code null} element type.
-	 * @param collectionType the desired type of the target collection; never {@code null}
+	 * @param collectionType the desired type of the target collection (never {@code null})
 	 * @param capacity the initial capacity
 	 * @return a new collection instance
 	 * @throws IllegalArgumentException if the supplied {@code collectionType}
@@ -164,7 +164,7 @@ public final class CollectionFactory {
 	 * supplied {@code elementType} is an enum type matching type {@code E}.
 	 * As an alternative, the caller may wish to treat the return value as a
 	 * raw collection or collection of {@link Object}.
-	 * @param collectionType the desired type of the target collection; never {@code null}
+	 * @param collectionType the desired type of the target collection (never {@code null})
 	 * @param elementType the collection's element type, or {@code null} if unknown
 	 * (note: only relevant for {@link EnumSet} creation)
 	 * @param capacity the initial capacity
@@ -280,7 +280,7 @@ public final class CollectionFactory {
 	 * may wish to treat the return value as a raw map or map keyed by
 	 * {@link Object}. Similarly, type safety cannot be enforced if the
 	 * desired {@code mapType} is {@link MultiValueMap}.
-	 * @param mapType the desired type of the target map; never {@code null}
+	 * @param mapType the desired type of the target map (never {@code null})
 	 * @param keyType the map's key type, or {@code null} if unknown
 	 * (note: only relevant for {@link EnumMap} creation)
 	 * @param capacity the initial capacity
@@ -344,6 +344,50 @@ public final class CollectionFactory {
 				return (value != null ? value.toString() : null);
 			}
 		};
+	}
+
+	/**
+	 * Create a variant of {@link java.util.Properties} that sorts properties
+	 * alphanumerically based on their keys.
+	 *
+	 * <p>This can be useful when storing the {@link Properties} instance in a
+	 * properties file, since it allows such files to be generated in a repeatable
+	 * manner with consistent ordering of properties. Comments in generated
+	 * properties files can also be optionally omitted.
+	 *
+	 * @param omitComments {@code true} if comments should be omitted when
+	 * storing properties in a file
+	 * @return a new {@code Properties} instance
+	 * @since 5.2
+	 * @see #createSortedProperties(Properties, boolean)
+	 */
+	public static Properties createSortedProperties(boolean omitComments) {
+		return new SortedProperties(omitComments);
+	}
+
+	/**
+	 * Create a variant of {@link java.util.Properties} that sorts properties
+	 * alphanumerically based on their keys.
+	 *
+	 * <p>This can be useful when storing the {@code Properties} instance in a
+	 * properties file, since it allows such files to be generated in a repeatable
+	 * manner with consistent ordering of properties. Comments in generated
+	 * properties files can also be optionally omitted.
+	 *
+	 * <p>The returned {@code Properties} instance will be populated with
+	 * properties from the supplied {@code properties} object, but default
+	 * properties from the supplied {@code properties} object will not be copied.
+	 *
+	 * @param properties the {@code Properties} object from which to copy the
+	 * initial properties
+	 * @param omitComments {@code true} if comments should be omitted when
+	 * storing properties in a file
+	 * @return a new {@code Properties} instance
+	 * @since 5.2
+	 * @see #createSortedProperties(boolean)
+	 */
+	public static Properties createSortedProperties(Properties properties, boolean omitComments) {
+		return new SortedProperties(properties, omitComments);
 	}
 
 	/**
