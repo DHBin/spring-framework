@@ -184,6 +184,7 @@ public class PathPatternParserTests {
 		checkStructure("/{foo}");
 		checkStructure("/{f}/");
 		checkStructure("/{foo}/{bar}/{wibble}");
+		checkStructure("/{mobile-number}"); // gh-23101
 	}
 
 	@Test
@@ -406,6 +407,15 @@ public class PathPatternParserTests {
 		Collections.sort(patterns);
 		assertThat(patterns.get(0)).isEqualTo(p3);
 		assertThat(patterns.get(1)).isEqualTo(p2);
+	}
+
+	@Test
+	public void separatorTests() {
+		PathPatternParser parser = new PathPatternParser();
+		parser.setPathOptions(PathContainer.Options.create('.', false));
+		String rawPattern = "first.second.{last}";
+		PathPattern pattern = parser.parse(rawPattern);
+		assertThat(pattern.computePatternString()).isEqualTo(rawPattern);
 	}
 
 	private PathPattern parse(String pattern) {
