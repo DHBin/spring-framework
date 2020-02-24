@@ -110,6 +110,11 @@ public abstract class ClassUtils {
 	 */
 	private static final Set<Class<?>> javaLanguageInterfaces;
 
+	/**
+	 * Cache for equivalent methods on an interface implemented by the declaring class.
+	 */
+	private static final Map<Method, Method> interfaceMethodCache = new ConcurrentReferenceHashMap<>(256);
+
 
 	static {
 		primitiveWrapperTypeMap.put(Boolean.class, boolean.class);
@@ -120,6 +125,7 @@ public abstract class ClassUtils {
 		primitiveWrapperTypeMap.put(Integer.class, int.class);
 		primitiveWrapperTypeMap.put(Long.class, long.class);
 		primitiveWrapperTypeMap.put(Short.class, short.class);
+		primitiveWrapperTypeMap.put(Void.class, void.class);
 
 		// Map entry iteration is less expensive to initialize than forEach with lambdas
 		for (Map.Entry<Class<?>, Class<?>> entry : primitiveWrapperTypeMap.entrySet()) {
@@ -462,7 +468,8 @@ public abstract class ClassUtils {
 
 	/**
 	 * Check if the given class represents a primitive wrapper,
-	 * i.e. Boolean, Byte, Character, Short, Integer, Long, Float, or Double.
+	 * i.e. Boolean, Byte, Character, Short, Integer, Long, Float, Double, or
+	 * Void.
 	 * @param clazz the class to check
 	 * @return whether the given class is a primitive wrapper class
 	 */
@@ -473,10 +480,12 @@ public abstract class ClassUtils {
 
 	/**
 	 * Check if the given class represents a primitive (i.e. boolean, byte,
-	 * char, short, int, long, float, or double) or a primitive wrapper
-	 * (i.e. Boolean, Byte, Character, Short, Integer, Long, Float, or Double).
+	 * char, short, int, long, float, or double), {@code void}, or a wrapper for
+	 * those types (i.e. Boolean, Byte, Character, Short, Integer, Long, Float,
+	 * Double, or Void).
 	 * @param clazz the class to check
-	 * @return whether the given class is a primitive or primitive wrapper class
+	 * @return {@code true} if the given class represents a primitive, void, or
+	 * a wrapper class
 	 */
 	public static boolean isPrimitiveOrWrapper(Class<?> clazz) {
 		Assert.notNull(clazz, "Class must not be null");
@@ -1287,13 +1296,16 @@ public abstract class ClassUtils {
 	 * @see #getMostSpecificMethod
 	 */
 	public static Method getInterfaceMethodIfPossible(Method method) {
-		if (Modifier.isPublic(method.getModifiers()) && !method.getDeclaringClass().isInterface()) {
-			Class<?> current = method.getDeclaringClass();
+		if (!Modifier.isPublic(method.getModifiers()) || method.getDeclaringClass().isInterface()) {
+			return method;
+		}
+		return interfaceMethodCache.computeIfAbsent(method, key -> {
+			Class<?> current = key.getDeclaringClass();
 			while (current != null && current != Object.class) {
 				Class<?>[] ifcs = current.getInterfaces();
 				for (Class<?> ifc : ifcs) {
 					try {
-						return ifc.getMethod(method.getName(), method.getParameterTypes());
+						return ifc.getMethod(key.getName(), key.getParameterTypes());
 					}
 					catch (NoSuchMethodException ex) {
 						// ignore
@@ -1301,8 +1313,8 @@ public abstract class ClassUtils {
 				}
 				current = current.getSuperclass();
 			}
-		}
-		return method;
+			return key;
+		});
 	}
 
 	/**
